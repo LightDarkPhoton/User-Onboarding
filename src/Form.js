@@ -6,7 +6,7 @@ export default function Form(props) {
         values,
         submit,
         inputChange,
-        checkboxChange,
+        validation,
         disabled,
         errors,
     } = props
@@ -16,14 +16,11 @@ export default function Form(props) {
         submit()
       }
     
-      const onCheckboxChange = evt => {
-        const { name, checked } = evt.target
-        checkboxChange(name, checked)
-      }
-    
       const onInputChange = evt => {
-        const { name, value } = evt.target
-        inputChange(name, value)
+        const { name, value, checked, type } = evt.target
+        evt.persist()
+        validation(evt)
+        inputChange(name, type==='checkbox' ? checked : value)
       }
 
       return (
@@ -34,7 +31,7 @@ export default function Form(props) {
                 
                 {/*Evidently, disabling the button until all form requirements are met */}
 
-                <button disabled={disabled}>submit</button>
+                <button id='submitButton' disabled={disabled}>submit</button>
               </div>
 
 
@@ -42,15 +39,50 @@ export default function Form(props) {
 
                 <h4>General Information</h4>
 
-                <label>name
+                <label>
+          name
+          <input
+            value={values.name}
+            onChange={onInputChange}
+            name="name"
+            type="text"
+          />
+          {errors.name.length > 0 ? <p>{errors.name}</p> : null}
+        </label>
+
+                <label>email
                     <input
 
-                    value={values.name}
+                    value={values.email}
                     onChange={onInputChange}
-                    name='name'
-                    type='text'
+                    name='email'
+                    type='email'
                     />
+                    {errors.email.length > 0 ? <p>{errors.email}</p> : null}
                 </label>
+
+                <label>password
+                    <input
+
+                    value={values.password}
+                    onChange={onInputChange}
+                    name='password'
+                    type='password'
+                    />
+                    {errors.password.length > 0 ? <p>{errors.password}</p> : null}
+                </label>
+
+                <label>terms
+                    <input
+
+                    checked={values.terms}
+                    onChange={onInputChange}
+                    name='terms'
+                    type='checkbox'
+                    />
+
+                </label>
+
             </div>
           </form>
       )
